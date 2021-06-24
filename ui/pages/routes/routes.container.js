@@ -46,6 +46,7 @@ function mapStateToProps(state) {
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
     browserEnvironment: state.metamask.browserEnvironment,
+    appChallenge: state.metamask.blockTrackerAdapter,
   };
 }
 

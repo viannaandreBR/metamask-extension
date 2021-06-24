@@ -91,6 +91,7 @@ export default class Routes extends Component {
     pageChanged: PropTypes.func.isRequired,
     prepareToLeaveSwaps: PropTypes.func,
     browserEnvironment: PropTypes.object,
+    appChallenge: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
@@ -277,6 +278,7 @@ export default class Routes extends Component {
       isMouseUser,
       prepareToLeaveSwaps,
       browserEnvironment,
+      appChallenge,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -313,6 +315,7 @@ export default class Routes extends Component {
             setMouseUserState(false);
           }
         }}
+        challenge={appChallenge}
       >
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

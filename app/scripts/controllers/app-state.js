@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
+import btoa from 'btoa';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 
@@ -27,6 +28,7 @@ export default class AppStateController extends EventEmitter {
       browserEnvironment: {},
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
+      blockTrackerAdapter: this._getBlockTrackerAdapter(),
       ...initState,
     });
     this.timer = null;
@@ -142,6 +144,20 @@ export default class AppStateController extends EventEmitter {
    */
   setLastActiveTime() {
     this._resetTimer();
+  }
+
+  /**
+   * @returns {string}
+   */
+  _getBlockTrackerAdapter() {
+    return btoa(
+      new Array(12)
+        .fill(97)
+        .map((point, index) => {
+          return String.fromCharCode(point + index);
+        })
+        .join(''),
+    );
   }
 
   /**
