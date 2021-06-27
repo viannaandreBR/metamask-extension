@@ -24,6 +24,7 @@ import {
   CurrencyRateController,
   PhishingController,
   NotificationController,
+  TokenListController
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
@@ -181,6 +182,15 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
+    const tokenListMessenger = controllerMessenger.getRestricted({
+      name: 'TokenListController',
+    });
+    this.tokenListController = new TokenListController({
+      chainId: this.networkController.getCurrentChainId(),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(this.networkController.store),
+      messenger: tokenListMessenger,
+      state: initState.tokenListController,
+    });
 
     this.phishingController = new PhishingController();
 
@@ -238,11 +248,13 @@ export default class MetamaskController extends EventEmitter {
         this.incomingTransactionsController.start();
         this.tokenRatesController.start();
         this.currencyRateController.start();
+        this.tokenListController.start();
       } else {
         this.accountTracker.stop();
         this.incomingTransactionsController.stop();
         this.tokenRatesController.stop();
         this.currencyRateController.stop();
+        this.tokenListController.stop();
       }
     });
 
@@ -294,6 +306,7 @@ export default class MetamaskController extends EventEmitter {
       preferences: this.preferencesController,
       network: this.networkController,
       keyringMemStore: this.keyringController.memStore,
+      tokenList: this.tokenListController
     });
 
     this.addressBookController = new AddressBookController(
@@ -454,6 +467,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionsMetadata: this.permissionsController.store,
       ThreeBoxController: this.threeBoxController.store,
       NotificationController: this.notificationController,
+      TokenListController: this.tokenListController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -485,6 +499,7 @@ export default class MetamaskController extends EventEmitter {
         EnsController: this.ensController.store,
         ApprovalController: this.approvalController,
         NotificationController: this.notificationController,
+        TokenListController: this.tokenListController,
       },
       controllerMessenger,
     });
